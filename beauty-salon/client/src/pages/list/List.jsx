@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import {useLocation} from  'react-router-dom';
 import './list.css';
 import NavBar from '../../components/navbar/navbar.jsx';
+import SearchItem from '../../components/searchItem/searchItem.jsx';
 import {format} from "date-fns";
 import {DateRange} from 'react-date-range';
 
@@ -38,7 +39,13 @@ const List = () => {
                         <button>Szukaj</button>
             
                     </div>
-                    <div className="listResult"></div>
+                    <div className="listResult">
+                        <SearchItem/>
+                        <SearchItem/>
+                        <SearchItem/>
+                        <SearchItem/>
+                        <SearchItem/>
+                    </div>
                 </div>
             </div>
 
