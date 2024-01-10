@@ -20,6 +20,46 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
 }
 
 
+.headerSearch {
+    height: 30px;
+    border: 3px solid  rgb(213, 235, 228);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0px;
+    border-radius: 5px;
+}
+
+.headerIcon{
+    color: lightgray
+}
+
+.headerBth{
+    border: none;
+}
+
+
+.headerSearchItem{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+.headerSearchText {
+    color: lightgray;
+    cursor: pointer;
+}
+
+.headerBth{
+    cursor: pointer;
+}
+
+.date{
+    position: absolute;
+    top: 50px;
+    z-index: 2;
+}
