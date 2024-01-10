@@ -55,3 +55,11 @@
     align-items: center;
     cursor: pointer;
 }
+
+.listSearch>button{
+    padding: 10px;
+    background-color: lightgray;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
