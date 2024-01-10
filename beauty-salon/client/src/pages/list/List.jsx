@@ -35,7 +35,7 @@ const List = () => {
                             />}
                         </div>
                        
-                        
+                        <button>Szukaj</button>
             
                     </div>
                     <div className="listResult"></div>
