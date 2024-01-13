@@ -3,17 +3,24 @@ import './service.css';
 import NavBar from '../../components/navbar/navbar.jsx';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot} from "@fortawesome/free-solid-svg-icons";
+import useFetch from '../../hooks/useFetch.jsx';
+import { useLocation } from 'react-router-dom';
 
 const Service = () => {
+    const location =useLocation();
+    const id =location.pathname.split("/")[2];
     const [slideNumber, setSlideNumber] = useState(0);
     const [open, setOpen] = useState(false);
-    const photos =[
-        {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
-        {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
-        {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
-        {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
-        {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
-    ]
+
+    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/find/${id}`);
+
+    // const photos =[
+    //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
+    //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
+    //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
+    //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
+    //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
+    // ]
     const handleOpen = (i) => {
         setSlideNumber(i);
         setOpen(true);
@@ -34,44 +41,44 @@ const Service = () => {
     return (
         <div>
             <NavBar/>
-            <div className="serviceContainer">
+            {loading ? "loading" : <div className="serviceContainer">
                 {open && <div className="slider">
                     <FontAwesomeIcon icon={faCircleXmark} className='close' onClick={()=>setOpen(false)}/>
                     <FontAwesomeIcon icon={faCircleArrowLeft} className='arrow' onClick={()=>{handleMove("l")}} />
                     <div className="sliderWrappere">
-                        <img src={photos[slideNumber].src} alt="" className="sliderImg" />
+                        <img src={data.photos[slideNumber]} alt="" className="sliderImg" />
 
                     </div>
                     <FontAwesomeIcon icon={faCircleArrowRight} className='arrow' onClick={()=>{handleMove("r")}}/>
                     </div>}
                 <div className="serviceWrapper">
                     <button className="bookNow">Zarezerwuj teraz</button>
-                    <h1 className="serviceTitle">Nazwa Usługi</h1>
+                    <h1 className="serviceTitle">{data.name}</h1>
                     <div className="serviceAddress">
                         <FontAwesomeIcon icon={faLocationDot}/>
-                        <span>Gdańsk, ul. Gdańska 25/145</span>
+                        <span>{data.address}</span>
                     </div>
 
                     <div className="servicePriceHighLight">
-                        <span>Dobra cena, tylko u nas, w centrum Gdańska 50zł</span>
+                        <span>{data.desc}</span>
                     </div>
                     
                     <div className="serviceImages">
-                        {photos.map((photo, index) => (
+                        {data.photos?.map((photo, index) => (
                             <div className="serviceImageWrapper">
-                                <img onClick={()=>handleOpen(index)} src={photo.src} alt="" className="serviceImage" />
+                                <img onClick={()=>handleOpen(index)} src={photo} alt="" className="serviceImage" />
                             </div>
                         ))}
                     </div>
 
                     <div className="serviceDetails">
                         <div className="serviceDetailsText">
-                            Jesli nie lubisz swoich paznokci swieżo po ściągnięciu hybrydy to koniecznie wybierz tą opcję. Na manicure podstawowy składa się: skrócenie paznokci, opiłowanie kształtu, opracowanie i wycięcie skórek oraz nawilżenie płytki.
+                            {data.fullDesc}
                         </div>
 
                         <div className="serviceDetailsPrice">
                             <h2>
-                                <b>50zł</b> (1.5 godziny)
+                                <b>{data.price}zł</b> (1.5 godziny)
                             </h2>
                             <button >Zarezerwuj teraz</button>
                         </div>
@@ -79,7 +86,7 @@ const Service = () => {
 
 
                 </div>
-            </div>
+            </div>}
         </div>
     )
 }
