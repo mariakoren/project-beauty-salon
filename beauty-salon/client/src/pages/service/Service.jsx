@@ -1,10 +1,11 @@
-import React , {useState} from 'react';
+import React , {useContext, useState} from 'react';
 import './service.css';
 import NavBar from '../../components/navbar/navbar.jsx';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot} from "@fortawesome/free-solid-svg-icons";
 import useFetch from '../../hooks/useFetch.jsx';
 import { useLocation } from 'react-router-dom';
+import { SearchContext } from '../../context/SearchContext.jsx';
 
 const Service = () => {
     const location =useLocation();
@@ -13,6 +14,7 @@ const Service = () => {
     const [open, setOpen] = useState(false);
 
     const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/find/${id}`);
+    const {dates} = useContext(SearchContext);
 
     // const photos =[
     //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
@@ -78,7 +80,7 @@ const Service = () => {
 
                         <div className="serviceDetailsPrice">
                             <h2>
-                                <b>{data.price}zł</b> (1.5 godziny)
+                                <b>{data.price}zł</b>
                             </h2>
                             <button >Zarezerwuj teraz</button>
                         </div>
