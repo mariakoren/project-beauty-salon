@@ -11,7 +11,7 @@ import useFetch from '../../hooks/useFetch.jsx';
 const List = () => {
     const location = useLocation();
     const [service, setService] = useState(location.state.service);
-    const [date, setDate] = useState(location.state.date);
+    const [dates, setDates] = useState(location.state.dates);
     const [openDate, setOpenDate] = useState(false);
 
     const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
@@ -35,11 +35,11 @@ const List = () => {
                         </div>
                         <div className="lsItem">
                             <label>Interesujące dni</label>
-                            <span onClick={()=> setOpenDate(!openDate)}>{`${format(date[0].startDate, 'MM/dd/yyyy')} do ${format(date[0].endDate, 'MM/dd/yyyy')}  `}</span>
+                            <span onClick={()=> setOpenDate(!openDate)}>{`${format(dates[0].startDate, 'MM/dd/yyyy')} do ${format(dates[0].endDate, 'MM/dd/yyyy')}  `}</span>
                             {openDate && <DateRange 
-                            onChange={item=>setDate(item.selection)}
+                            onChange={item=>setDates(item.selection)}
                             minDate={new Date()}
-                            ranges={date}
+                            ranges={dates}
                             />}
                         </div>
                        
