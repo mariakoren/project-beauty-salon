@@ -6,15 +6,17 @@ import useFetch from "../hooks/useFetch.jsx";
 
 
 const Featured = () => {
-    const {data, loading, error} = useFetch("/services/countByType?types=pielegnacjaRak,fryzjerstwo,pielegnacjaTwarzy");
+
+    const {data, loading, error} = useFetch("http://localhost:8800/api/services/countByType?types=pielegnacjaRak,fryzjerstwo,pielegnacjaTwarzy");
     console.log(data);
     return (
         <div className="featured">
-            <div className="featuredItem">
+            {loading ? "Loading please wait" : 
+            <><div className="featuredItem">
                 <img src={reki} alt="" className="featuredImage" />
                 <div className="featuredTitle">
                     <h1>Pielegnacja rąk</h1>
-                    <h2>{data[0]} zabiegów</h2>
+                    <h2>{data[0]} zabiegi</h2>
                 </div>
             </div>
 
@@ -22,7 +24,7 @@ const Featured = () => {
                 <img src={twarz} alt="" className="featuredImage" />
                 <div className="featuredTitle">
                     <h1>Pielegnacja twarzy</h1>
-                    <h2>{data[1]} zabiegów</h2>
+                    <h2>{data[1]} zabiegi</h2>
                 </div>
             </div>
 
@@ -30,9 +32,9 @@ const Featured = () => {
                 <img src={fryzjerstwo} alt="" className="featuredImage" />
                 <div className="featuredTitle">
                     <h1>Fryzjerstwo</h1>
-                    <h2>{data[2]} zabiegów</h2>
+                    <h2>{data[2]} zabiegi</h2>
                 </div>
-            </div>
+            </div> </>}
         </div>
     )
 }

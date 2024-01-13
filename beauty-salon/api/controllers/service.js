@@ -53,10 +53,7 @@ export const getService = async (req, res) => {
 export const getallService = async (req, res) => {
 
     try {
-        const services = await Service.find(
-            req.params.id, 
-            )
-
+        const services = await Service.find(req.query).limit(req.query.limit)
         res.status(200).json(services)
     } catch(err){
         res.status(500).json(err);

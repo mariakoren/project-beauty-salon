@@ -5,6 +5,7 @@ import authRoute from "./routes/auth.js";
 import servicesRoute from "./routes/services.js";
 import usersRoute from "./routes/users.js";
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 const app = express();
 dotenv.config()
@@ -23,6 +24,7 @@ mongoose.connection.on("disconnected", ()=>{
 })
 
 //middlewares
+app.use(cors());
 app.use(cookieParser())
 app.use(express.json())
 app.use("/api/auth", authRoute);
