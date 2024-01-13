@@ -4,18 +4,22 @@ import NavBar from '../../components/navbar/navbar.jsx';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot} from "@fortawesome/free-solid-svg-icons";
 import useFetch from '../../hooks/useFetch.jsx';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../context/SearchContext.jsx';
+import { AuthContext } from '../../context/AuthContext.jsx';
 
 const Service = () => {
     const location =useLocation();
     const id =location.pathname.split("/")[2];
     const [slideNumber, setSlideNumber] = useState(0);
     const [open, setOpen] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+
 
     const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/find/${id}`);
     const {dates} = useContext(SearchContext);
-
+    const {user} = useContext(AuthContext);
+    const navigate = useNavigate();
     // const photos =[
     //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
     //     {src: "https://www.ljepotaizdravlje.hr/wp-content/uploads/2023/07/bijeli-nail-art.jpg"},
@@ -38,6 +42,15 @@ const Service = () => {
         }
 
         setSlideNumber(newSlideNum);
+    }
+
+    const handleClick = () => {
+        if (user) {
+            setOpenModal(true);
+
+        } else {
+            navigate("/login");
+        }
     }
 
     return (
@@ -82,13 +95,14 @@ const Service = () => {
                             <h2>
                                 <b>{data.price}zł</b>
                             </h2>
-                            <button >Zarezerwuj teraz</button>
+                            <button onClick={handleClick}>Zarezerwuj teraz</button>
                         </div>
                     </div>
 
 
                 </div>
             </div>}
+            {/* {openModal && } */}
         </div>
     )
 }
