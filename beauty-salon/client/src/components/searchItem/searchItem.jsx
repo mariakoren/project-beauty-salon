@@ -18,7 +18,7 @@ const SearchItem = ({item}) => {
                 <div className="siRating">
                     <span>Excellent</span>
                     <button>8.9</button>
-                    <Link to={`http://localhost:8800/api/services/${item._id}`}>
+                    <Link to={`http://localhost:3000/services/${item._id}`}>
                         <button className='siCheckButton'>zobacz dostępność</button>
                     </Link>
                 </div>

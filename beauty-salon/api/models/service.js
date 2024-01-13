@@ -24,6 +24,14 @@ const ServiceSchema = new mongoose.Schema({
     },
     photos:{
         type: [String],
+    },
+    address:{
+        type:String,
+        required: true
+    },
+    fullDesc:{
+        type:String,
+        required: true
     }
 
 })

@@ -14,7 +14,11 @@ const List = () => {
     const [date, setDate] = useState(location.state.date);
     const [openDate, setOpenDate] = useState(false);
 
-    const {data, loading, error, refetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
+    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
+
+    const handleClick = ()=> {
+        reFetch()
+    }
 
 
 
@@ -39,7 +43,7 @@ const List = () => {
                             />}
                         </div>
                        
-                        <button>Szukaj</button>
+                        <button onClick={handleClick}>Szukaj</button>
             
                     </div>
                     <div className="listResult">
