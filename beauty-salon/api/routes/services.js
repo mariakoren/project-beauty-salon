@@ -1,6 +1,6 @@
 import express from "express";
 import Service from "../models/service.js";
-import { createService, deleteService, getService, getallService, updatedService } from "../controllers/service.js";
+import { createService, deleteService, getService, getallService, updatedService, countByType } from "../controllers/service.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 const router = express.Router();
 
@@ -14,10 +14,13 @@ router.put("/:id", verifyAdmin, updatedService)
 router.delete("/:id",verifyUser, deleteService)
 
 //GET
-router.get("/:id", getService)
+router.get("/find/:id", getService)
 
 //GET ALL
 router.get("/", getallService)
+
+//GET BY TYPE
+router.get("/countByType", countByType)
 
 
 
