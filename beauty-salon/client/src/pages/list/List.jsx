@@ -5,6 +5,7 @@ import NavBar from '../../components/navbar/navbar.jsx';
 import SearchItem from '../../components/searchItem/searchItem.jsx';
 import {format} from "date-fns";
 import {DateRange} from 'react-date-range';
+import useFetch from '../../hooks/useFetch.jsx';
 
 
 const List = () => {
@@ -12,6 +13,8 @@ const List = () => {
     const [service, setService] = useState(location.state.service);
     const [date, setDate] = useState(location.state.date);
     const [openDate, setOpenDate] = useState(false);
+
+    const {data, loading, error, refetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
 
 
 
@@ -40,11 +43,11 @@ const List = () => {
             
                     </div>
                     <div className="listResult">
-                        <SearchItem/>
-                        <SearchItem/>
-                        <SearchItem/>
-                        <SearchItem/>
-                        <SearchItem/>
+                        {loading ? "loading" : <>
+                            {data.map(item => (
+                                <SearchItem item={item} key={item._id}/>
+                            ))}
+                        </>}
                     </div>
                 </div>
             </div>
