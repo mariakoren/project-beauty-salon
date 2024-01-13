@@ -1,40 +1,38 @@
 import "./featured.css";
+import reki from './reki.jpg';
+import twarz from './twarz.jpg';
+import fryzjerstwo from './fryzjerstwo.jpg';
+import useFetch from "../hooks/useFetch.jsx";
+
 
 const Featured = () => {
+    const {data, loading, error} = useFetch("/services/countByType?types=pielegnacjaRak,fryzjerstwo,pielegnacjaTwarzy");
+    console.log(data);
     return (
         <div className="featured">
             <div className="featuredItem">
-                <img src="https://d375139ucebi94.cloudfront.net/region2/pl/99828/biz_photo/b61950182ae24edbb2519dfbb0e2bd-anna-gabinet-kosmetyczny-biz-photo-31be3b3472624b2c9a097f2c402e07-booksy.jpeg?size=640x427" alt="" className="featuredImage" />
+                <img src={reki} alt="" className="featuredImage" />
                 <div className="featuredTitle">
-                    <h1>Miejsce pracy</h1>
+                    <h1>Pielegnacja rąk</h1>
+                    <h2>{data[0]} zabiegów</h2>
                 </div>
             </div>
 
             <div className="featuredItem">
-                <img src="https://lh3.googleusercontent.com/proxy/xWdKmAVSy7jGT6YCHR7B-DehvHjw9aGUY7n_ywdAiA3iXnuOEFC8FquwSD9cH3mmYdG-ug6C1SRxSllqgJAmkXqtN8OGiUR6a6lOrHVZFYQW" alt="" className="featuredImage" />
+                <img src={twarz} alt="" className="featuredImage" />
                 <div className="featuredTitle">
-                    <h1>W pracy</h1>
+                    <h1>Pielegnacja twarzy</h1>
+                    <h2>{data[1]} zabiegów</h2>
                 </div>
             </div>
 
             <div className="featuredItem">
-                <img src="https://lh3.googleusercontent.com/proxy/ncqkBQ08ALoWQB6dLUpqXplsFjDye1SIjffK1Miu14jFy7s6IqchKhtSImq5uvBmgjT1QE4l5oBCB7FRqvsLBFildsWrVFj7RUnQdRXWl9cbaw" alt="" className="featuredImage" />
+                <img src={fryzjerstwo} alt="" className="featuredImage" />
                 <div className="featuredTitle">
-                    <h1>Nowe usługi</h1>
+                    <h1>Fryzjerstwo</h1>
+                    <h2>{data[2]} zabiegów</h2>
                 </div>
             </div>
-
-            <div className="featuredItem">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiHB01ESyTG9GBqajtPgnzUY0i-T45EDmCREcC1HoWlq240RGUAxVPlKj4DYVQxI1_iRA&usqp=CAU" alt="" className="featuredImage" />
-                <div className="featuredTitle">
-                    <h1>Dołączył do nas nowy fryzjer</h1>
-                </div>
-            </div>
-
-            
-
-
-
         </div>
     )
 }

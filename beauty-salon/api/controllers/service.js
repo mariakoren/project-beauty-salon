@@ -62,3 +62,15 @@ export const getallService = async (req, res) => {
         res.status(500).json(err);
     }
 }
+
+export const countByType = async (req, res, next) => {
+    const types = req.query.types.split(',');
+    try{
+        const list = await Promise.all(types.map(type => {
+            return Service.countDocuments({type:type})
+        }))
+        res.status(200).json(list);
+    } catch (err) {
+        next(err);
+    }
+}
