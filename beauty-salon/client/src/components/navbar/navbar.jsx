@@ -1,10 +1,13 @@
 import "./navbar.css";
-
+import {Link} from "react-router-dom";
 const NavBar = () => {
     return (
         <div className ="navbar">
             <div className="navContainer">
-                <span className="logo">Maria's Beauty</span>
+                <Link to="/" style={{color: indexedDB, textDecoration: "none"}} >
+                    <span className="logo">Maria's Beauty</span>
+                </Link>
+                
                 <div className="navItems">
                     <button className="navButton">Register</button>
                     <button className="navButton">Login</button>
