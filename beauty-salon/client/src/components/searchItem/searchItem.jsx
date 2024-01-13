@@ -1,22 +1,29 @@
 import './searchItem.css';
+import {Link} from "react-router-dom";
 
-const SearchItem = () => {
+const SearchItem = ({item}) => {
     return(
         <div className="searchItem">
             {/* <img src="https://www.creativefabrica.com/wp-content/uploads/2023/02/20/Beauty-Salon-Logo-Vector-Illustration-Graphics-61843178-1.jpg" alt="" className="searchItemImage" /> */}
-            <img src="https://st2.depositphotos.com/7725722/12036/v/450/depositphotos_120366882-stock-illustration-glamorous-logo-for-a-beauty.jpg" alt="" className="searchItemImage" />
+            {/* <img src="https://www.creativefabrica.com/wp-content/uploads/2023/02/20/Beauty-Salon-Logo-Vector-Illustration-Graphics-61843178-1.jpg" alt="" className="searchItemImage" alt="" className="searchItemImage" /> */}
+            <img src={item.photos[0]} alt="" className="searchItemImage" />
             
+
+
             <div className="siDesc">
-                <h1 className='siTitle'>Nazwa</h1>
-                <span className="siAbout">Opis</span>
+                <h1 className='siTitle'>{item.name}</h1>
+                <span className="siAbout">{item.desc}</span>
             </div>
             <div className="siDetails">
                 <div className="siRating">
                     <span>Excellent</span>
                     <button>8.9</button>
+                    <Link to={`http://localhost:8800/api/services/${item._id}`}>
+                        <button className='siCheckButton'>zobacz dostępność</button>
+                    </Link>
                 </div>
                 <div className="siDetailText">
-                    <span className="siPrice">50 zł</span>
+                    <span className="siPrice">{item.price} zł</span>
                 </div>
             </div>
         </div>

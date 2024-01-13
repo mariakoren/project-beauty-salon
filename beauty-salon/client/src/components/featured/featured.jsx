@@ -2,13 +2,12 @@ import "./featured.css";
 import reki from './reki.jpg';
 import twarz from './twarz.jpg';
 import fryzjerstwo from './fryzjerstwo.jpg';
-import useFetch from "../hooks/useFetch.jsx";
+import useFetch from "../../hooks/useFetch.jsx";
 
 
 const Featured = () => {
 
     const {data, loading, error} = useFetch("http://localhost:8800/api/services/countByType?types=pielegnacjaRak,fryzjerstwo,pielegnacjaTwarzy");
-    console.log(data);
     return (
         <div className="featured">
             {loading ? "Loading please wait" : 

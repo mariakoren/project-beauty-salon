@@ -21,6 +21,9 @@ const ServiceSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
+    },
+    photos:{
+        type: [String],
     }
 
 })
