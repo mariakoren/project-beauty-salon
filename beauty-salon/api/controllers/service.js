@@ -1,4 +1,5 @@
 import Service from "../models/service.js";
+import Time from "../models/times.js";
 
 export const createService = async (req, res) => {
     const newService = new Service(req.body);
@@ -71,3 +72,17 @@ export const countByType = async (req, res, next) => {
         next(err);
     }
 }
+
+export const getServiceTimes = async (req, res, next) => {
+    try {
+      const service = await Service.findById(req.params.id);
+      const list = await Promise.all(
+        service.times.map((time) => {
+          return Time.findById(time);
+        })
+      );
+      res.status(200).json(list)
+    } catch (err) {
+      next(err);
+    }
+  };
