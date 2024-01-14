@@ -1,6 +1,6 @@
 import express from "express";
 import Service from "../models/service.js";
-import { createService, deleteService, getService, getallService, updatedService, countByType } from "../controllers/service.js";
+import { createService, deleteService, getService, getallService, updatedService, countByType, getServiceTimes } from "../controllers/service.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 const router = express.Router();
 
@@ -21,6 +21,10 @@ router.get("/", getallService)
 
 //GET BY TYPE
 router.get("/countByType", countByType)
+
+
+
+router.get("/time/:id", getServiceTimes )
 
 
 

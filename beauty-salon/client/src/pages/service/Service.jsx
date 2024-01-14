@@ -7,6 +7,7 @@ import useFetch from '../../hooks/useFetch.jsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../context/SearchContext.jsx';
 import { AuthContext } from '../../context/AuthContext.jsx';
+import Reserve from '../../components/reserve/reserve.jsx';
 
 const Service = () => {
     const location =useLocation();
@@ -102,7 +103,7 @@ const Service = () => {
 
                 </div>
             </div>}
-            {/* {openModal && } */}
+            {openModal && <Reserve setOpen={setOpenModal} serviceId={id}/> }
         </div>
     )
 }

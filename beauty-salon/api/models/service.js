@@ -32,6 +32,9 @@ const ServiceSchema = new mongoose.Schema({
     fullDesc:{
         type:String,
         required: true
+    },
+    times: {
+        type: [String],
     }
 
 })
