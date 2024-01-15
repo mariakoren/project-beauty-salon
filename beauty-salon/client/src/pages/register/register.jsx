@@ -2,12 +2,14 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import "./login.css";
+import "./register.css";
 
-const Login = () => {
+const Register = () => {
   const [credentials, setCredentials] = useState({
     username: undefined,
+    email: undefined,
     password: undefined,
+
   });
 
   const {user,  loading, error, dispatch } = useContext(AuthContext);
@@ -20,17 +22,11 @@ const Login = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    dispatch({ type: "LOGIN_START" });
+    dispatch({ type: "REGISTER_START" });
     try {
-      const res = await axios.post("http://localhost:8800/api/auth/login", credentials);
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-        if(res.data.isAdmin){
-          navigate("/admin");
-        } else {
-          navigate("/");
-        }
-      
-      
+      const res = await axios.post("http://localhost:8800/api/auth/register", credentials);
+      dispatch({ type: "REGISTER_SUCCESS", payload: res.data.details });
+      navigate("/"); 
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
     }
@@ -47,14 +43,21 @@ const Login = () => {
           className="lInput"
         />
         <input
+          type="text"
+          placeholder="email"
+          id="email"
+          onChange={handleChange}
+          className="lInput"
+        />
+        <input
           type="password"
           placeholder="password"
           id="password"
           onChange={handleChange}
           className="lInput"
         />
-        <button disabled={loading} onClick={handleClick} className="lButton">
-          Login
+        <button disabled={loading}  onClick={handleClick} className="lButton">
+          Zarejestruj
         </button>
         {error && <span>{error.message}</span>}
       </div>
@@ -62,4 +65,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
