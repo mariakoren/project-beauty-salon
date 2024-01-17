@@ -86,3 +86,38 @@ export const getServiceTimes = async (req, res, next) => {
       next(err);
     }
   };
+
+//   export const getFilteredServices = async (req, res) => {
+//     try {
+//         const searchConditions = {
+//             $or: [
+//                 { type: { $regex: req.query.pattern, $options: 'i' } },
+//                 { name: { $regex: req.query.pattern, $options: 'i' } },
+//                 { desc: { $regex: req.query.pattern, $options: 'i' } }
+//             ]
+//         };
+//         const services = await Service.find(searchConditions).limit(req.query.limit);
+//         res.status(200).json(services);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// };
+
+
+export const getFilteredServices = async (req, res) => {
+    try {
+        const pattern = req.query.pattern;
+        const searchConditions = {
+            $or: [
+                { type: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+                { name: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+                { desc: { $regex: pattern.split('').join('.*'), $options: 'i' } }
+            ]
+        };
+        const services = await Service.find(searchConditions).limit(req.query.limit);
+        res.status(200).json(services);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
