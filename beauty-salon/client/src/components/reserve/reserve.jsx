@@ -66,20 +66,22 @@ const Reserve = ({ setOpen, serviceId}) => {
       setOpen(false);
 
 
-      await Promise.all(selectedTimes.map((timeId) => (
-        axios.post('http://localhost:8800/api/reservation', {
+
+      try {
+        await axios.post('http://localhost:8800/api/reservation', {
           userId: user._id,
-          // userId: "cwsedfcwe",
           serviceId: serviceId,
-          date: alldates,
-          time: timeId
-      })
+          date: alldates[0],
+          time: selectedTimes[0]
+        });
+      } catch (error) {
+        console.error("Błąd Axios:", error);
+      }
 
-      )))
-
-      
       navigate("/");
-    } catch (err) {}
+        
+    }
+    catch (err) {}
   };
   return (
     <div className="reserve">
