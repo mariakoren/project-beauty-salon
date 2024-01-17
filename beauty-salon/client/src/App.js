@@ -10,6 +10,7 @@ import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Admin from "./pages/admin/admin";
 import Statistics from "./pages/admin/statistics";
+import AddServiceForm from "./pages/admin/addService";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route path="/register" element={<Register/>}/>
         <Route path="/admin" element={<Admin/>}/>
         <Route path="admin/statistics" element={<Statistics/>}/>
+        <Route path="admin/addservice" element={<AddServiceForm/>}/>
+        
       </Routes>
     </BrowserRouter>
   );
