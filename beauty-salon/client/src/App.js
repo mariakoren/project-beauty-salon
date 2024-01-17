@@ -12,6 +12,9 @@ import Admin from "./pages/admin/admin";
 import Statistics from "./pages/admin/statistics";
 import AddService from "./pages/admin/addService";
 import EditService from "./pages/admin/editService";
+import Opinions from "./pages/opinions/opinions";
+import AllServices from "./pages/allservices/allServices";
+
 
 function App() {
   return (
@@ -22,6 +25,8 @@ function App() {
         <Route path="/services/:id" element={<Service/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/allservices" element={<AllServices/>}/>
+        <Route path="/opinions" element={<Opinions/>}/>
         <Route path="/admin" element={<Admin/>}/>
         <Route path="admin/statistics" element={<Statistics/>}/>
         <Route path="admin/addservice" element={<AddService/>}/>

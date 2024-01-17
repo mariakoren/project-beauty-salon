@@ -53,6 +53,8 @@ const NavBar = () => {
                         <button onClick = {handleLogin} className="navButton">Załoguj się</button>
                     </div>
                 }
+                <button onClick={()=>navigate("/allservices")} className="navButton">Pokaż wszystkie usługi</button>
+                <button onClick={()=>navigate("/opinions")} className="navButton">Pokaż opinii</button>
 
             </div>
         </div>

@@ -21,9 +21,6 @@ export const deleteReservation = async (req, res) => {
         const deletedReservation = await Reservation.findByIdAndDelete(
             req.params.id
         )
-
-
-
         async () => {
             try {
               await Time.updateOne(
