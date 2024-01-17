@@ -6,6 +6,7 @@ import servicesRoute from "./routes/services.js";
 import usersRoute from "./routes/users.js";
 import timesRoute from "./routes/times.js";
 import reserveRoute from "./routes/reservation.js";
+import opinionRoute from "./routes/opinions.js";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 
@@ -37,6 +38,7 @@ app.use("/api/services", servicesRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/times", timesRoute );
 app.use("/api/reservation", reserveRoute);
+app.use("/api/opinions", opinionRoute);
 
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
