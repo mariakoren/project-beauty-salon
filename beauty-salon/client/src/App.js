@@ -8,6 +8,8 @@ import List from './pages/list/List';
 import Service from "./pages/service/Service";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
+import Admin from "./pages/admin/admin";
+import Statistics from "./pages/admin/statistics";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/services/:id" element={<Service/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/admin" element={<Admin/>}/>
+        <Route path="admin/statistics" element={<Statistics/>}/>
       </Routes>
     </BrowserRouter>
   );

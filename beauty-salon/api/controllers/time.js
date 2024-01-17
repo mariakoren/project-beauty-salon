@@ -84,3 +84,19 @@ export const getTimes = async (req, res, next) => {
     next(err);
   }
 };
+
+export const removeTimeAvailability = async (req, res, next) => {
+  try {
+    await Time.updateOne(
+      { "timeNumber._id": req.params.id },
+      {
+        $pull: {
+          "timeNumber.$.unavailableDates": req.body.date
+        },
+      }
+    );
+    res.status(200).json("Time status has been updated.");
+  } catch (err) {
+    next(err);
+  }
+};

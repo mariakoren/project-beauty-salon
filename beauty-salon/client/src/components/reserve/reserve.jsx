@@ -7,11 +7,13 @@ import { useContext, useState } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {AuthContext} from "../../context/AuthContext";
 
 const Reserve = ({ setOpen, serviceId}) => {
   const [selectedTimes, setSelectedTimes] = useState([]);
   const { data, loading, error } = useFetch(`http://localhost:8800/api/services/time/${serviceId}`);
   const { dates } = useContext(SearchContext);
+  const {user} = useContext(AuthContext);
 
   const getDatesInRange = (startDate, endDate) => {
     const start = new Date(startDate);
@@ -62,6 +64,20 @@ const Reserve = ({ setOpen, serviceId}) => {
         })
       );
       setOpen(false);
+
+
+      await Promise.all(selectedTimes.map((timeId) => (
+        axios.post('http://localhost:8800/api/reservation', {
+          userId: user._id,
+          // userId: "cwsedfcwe",
+          serviceId: serviceId,
+          date: alldates,
+          time: timeId
+      })
+
+      )))
+
+      
       navigate("/");
     } catch (err) {}
   };

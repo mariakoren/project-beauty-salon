@@ -126,3 +126,13 @@
     color: lightgray;
     cursor: pointer;
   }
+
+  .bookNow2{
+    border: none;
+    padding: 10px 20px;
+    background-color: #0071c2;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+  }

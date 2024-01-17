@@ -40,15 +40,24 @@ export const getUser = async (req, res) => {
     }
 } 
 
-export const getallUser = async (req, res) => {
+// export const getallUser = async (req, res) => {
 
+//     try {
+//         const users = await User.find(
+//             req.params.id, 
+//             )
+
+//         res.status(200).json(users)
+//     } catch(err){
+//         res.status(500).json(err);
+//     }
+// }
+
+export const getallUser = async (req, res, next) => {
     try {
-        const users = await User.find(
-            req.params.id, 
-            )
-
-        res.status(200).json(users)
-    } catch(err){
-        res.status(500).json(err);
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (err) {
+        next(err); 
     }
-}
+};
