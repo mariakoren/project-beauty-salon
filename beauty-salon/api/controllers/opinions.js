@@ -19,3 +19,23 @@ export const getOpinions = async (req, res) => {
         res.status(500).json(err);
     }
 }
+
+
+export const sortOpinions = async (req, res) => {
+    try {
+        const query = req.query;
+        const sortBy = query.sortBy || 'date'; 
+        const sortOrder = query.sortOrder || 'desc'; 
+
+        const opinions = await Opinions.find({})
+            .sort({
+                [sortBy]: sortOrder === 'desc' ? -1 : 1,
+                'date': sortOrder === 'desc' && sortBy !== 'date' ? -1 : 1
+            })
+            .limit(query.limit);
+
+        res.status(200).json(opinions);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
