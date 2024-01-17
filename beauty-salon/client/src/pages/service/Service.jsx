@@ -68,7 +68,7 @@ const Service = () => {
                     <FontAwesomeIcon icon={faCircleArrowRight} className='arrow' onClick={()=>{handleMove("r")}}/>
                     </div>}
                 <div className="serviceWrapper">
-                    <button className="bookNow">Zarezerwuj teraz</button>
+                    <button onClick={handleClick} className="bookNow">Zarezerwuj teraz</button>
                     <h1 className="serviceTitle">{data.name}</h1>
                     <div className="serviceAddress">
                         <FontAwesomeIcon icon={faLocationDot}/>
@@ -96,7 +96,7 @@ const Service = () => {
                             <h2>
                                 <b>{data.price}zł</b>
                             </h2>
-                            <button onClick={handleClick}>Zarezerwuj teraz</button>
+                            <button onClick={handleClick} className="bookNow2">Zarezerwuj teraz</button>
                         </div>
                     </div>
 

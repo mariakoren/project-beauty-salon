@@ -4,6 +4,7 @@ import {
   deleteTime,
   getTime,
   getTimes,
+  removeTimeAvailability,
   updateTime,
   updateTimeAvailability,
 } from "../controllers/time.js";
@@ -16,6 +17,7 @@ router.post("/:serviceid", verifyAdmin, createTime);
 //UPDATE
 router.put("/availability/:id", updateTimeAvailability);
 router.put("/:id", verifyAdmin, updateTime);
+router.put("/remove-availability/:id", removeTimeAvailability);
 //DELETE
 router.delete("/:id/:serviceid", verifyAdmin, deleteTime);
 //GET
