@@ -14,7 +14,9 @@ const List = () => {
     const [dates, setDates] = useState(location.state.dates);
     const [openDate, setOpenDate] = useState(false);
 
-    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
+    // const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
+    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/search?pattern=${service}`);
+
 
     const handleClick = ()=> {
         reFetch()
@@ -31,16 +33,22 @@ const List = () => {
                         <h1 className="lsTitle">Search</h1>
                         <div className="lsItem">
                             <label>Nazwa zabiegu</label>
-                            <input type="text" placeholder={service} />
+                            <input
+                              type="text"
+                              placeholder={service}
+                              onChange={(e) => setService(e.target.value)}
+                            />
                         </div>
                         <div className="lsItem">
                             <label>Interesujące dni</label>
                             <span onClick={()=> setOpenDate(!openDate)}>{`${format(dates[0].startDate, 'MM/dd/yyyy')} do ${format(dates[0].endDate, 'MM/dd/yyyy')}  `}</span>
-                            {openDate && <DateRange 
-                            onChange={item=>setDates(item.selection)}
-                            minDate={new Date()}
-                            ranges={dates}
-                            />}
+                            {openDate && (
+                                <DateRange
+                                  onChange={(item) => setDates([item.selection])}
+                                  minDate={new Date()}
+                                  ranges={dates}
+                                />
+                              )}
                         </div>
                        
                         <button onClick={handleClick}>Szukaj</button>

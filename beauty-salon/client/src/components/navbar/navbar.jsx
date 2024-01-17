@@ -8,17 +8,11 @@ import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 
-    const [openModal, setOpenModal] = useState(false);
-
     const navigate = useNavigate();
     const {user} = useContext(AuthContext);
 
     const handleLogin = () => {
-        if (user) {
-            setOpenModal(true);
-        } else {
             navigate("/login");   
-        }
     }
 
     const handleRegister = () => {
