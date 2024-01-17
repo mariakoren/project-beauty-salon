@@ -35,8 +35,23 @@ const ServiceSchema = new mongoose.Schema({
     },
     times: {
         type: [String],
+    },
+    ratingDetail: {
+        type: String,
+        enum: ['bardzo polecane', 'polecane', 'nie polecane']
     }
 
 })
+
+ServiceSchema.pre('save', function (next) {
+    if (this.rating >= 4.5) {
+        this.ratingDetail = 'bardzo polecane';
+    } else if (this.rating >= 2.0) {
+        this.ratingDetail = 'polecane';
+    } else {
+        this.ratingDetail = 'nie polecane';
+    }
+    next();
+});
 
 export default mongoose.model("Service", ServiceSchema);
