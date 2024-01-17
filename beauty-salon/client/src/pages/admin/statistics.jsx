@@ -1,31 +1,78 @@
+import React from "react";
 import axios from "axios";
 import useFetch from "../../hooks/useFetch";
-
+import { useNavigate } from "react-router-dom";
 
 const Statistics = () => {
-    const { data, loading, error, reFetch } = useFetch(`http://localhost:8800/api/users`);
+  const navigate = useNavigate();
+  const { data: userData, loading: userLoading, error: userError, reFetch: userReFetch } = useFetch(
+    "http://localhost:8800/api/users"
+  );
 
-    if (loading) {
-        return <p>Ładowanie...</p>;
-    }
+  return (
+    <div>
+      <ul>
+        {userData &&
+          userData.map((user) => (
+            <li key={user.id}>
+              <div>
+                <h3>Statystyki dla {user.username}</h3>
+                <h4>Wszystkie rezerwacje</h4>
+                <UserReservations userId={user._id} />
+              </div>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+};
 
-    if (error) {
-        return <p>Błąd podczas pobierania danych: {error.message}</p>;
-    }
+const UserReservations = ({ userId }) => {
+  const { data: reservationData, loading: reservationLoading, error: reservationError, reFetch: reservationReFetch } =
+    useFetch(`http://localhost:8800/api/reservation/find/?id=${userId}`);
+  return (
+    <div>
+      {reservationData.map((reservation) => (
+        <li key={reservation.id}>
+            <div>
+                {/* {reservation.serviceId} */}
+                <ul>
+                    <li><ServiceDetails serviceId={reservation.serviceId}/> </li>
+                    <li>{reservation.date}</li>
+                    <br/>
+                </ul>
+                <br/>
+            </div>
+        </li>
+        
+      ))}
+      {reservationData.length!==0 ? 
+        <div>
+            <h4>średnia cena ze wszysrkich usług:</h4> <Average userId={userId}/>
+        </div> 
+        : 
+        <></>}
+    </div>
+  );
+};
+
+const ServiceDetails = ({serviceId}) => {
+    const { data: serviceData, loading: serviceLoading, error: serviceError, reFetch: serviceReFetch } =
+    useFetch(`http://localhost:8800/api/services/find/${serviceId}`);
 
     return (
         <div>
-            <ul>
-                {data && data.map((dane) => (
-                    <li key={dane.id}>
-                        {/* {dane.username} */}
-                        <button>Statystyki dla {dane.username}</button>
-                        
-                    </li>
-                ))}
-            </ul>
+            {serviceData.name}
         </div>
-    );
+    )
+}
+
+
+const Average = ({userId}) => {
+    const {data: averagedata} = useFetch(`http://localhost:8800/api/reservation/average?id=${userId}`)
+    return (
+        <div>{averagedata.averagePrice}</div>
+    )
 }
 
 export default Statistics;
