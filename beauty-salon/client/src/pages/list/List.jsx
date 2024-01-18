@@ -6,7 +6,7 @@ import SearchItem from '../../components/searchItem/searchItem.jsx';
 import {format} from "date-fns";
 import {DateRange} from 'react-date-range';
 import useFetch from '../../hooks/useFetch.jsx';
-
+import DatePicker from "react-datepicker";
 
 const List = () => {
     const location = useLocation();
@@ -43,11 +43,17 @@ const List = () => {
                             <label>Interesujące dni</label>
                             <span onClick={()=> setOpenDate(!openDate)}>{`${format(dates[0].startDate, 'MM/dd/yyyy')} do ${format(dates[0].endDate, 'MM/dd/yyyy')}  `}</span>
                             {openDate && (
-                                <DateRange
-                                  onChange={(item) => setDates([item.selection])}
-                                  minDate={new Date()}
-                                  ranges={dates}
-                                />
+                                // <DateRange
+                                //   onChange={(item) => setDates([item.selection])}
+                                //   minDate={new Date()}
+                                //   ranges={dates}
+                                // />
+                                <DatePicker
+                            //   selected={dates[0]} 
+                              onChange={date => setDates([date])} 
+                              minDate={new Date()} 
+                              className="date"
+                            />
                               )}
                         </div>
                        
