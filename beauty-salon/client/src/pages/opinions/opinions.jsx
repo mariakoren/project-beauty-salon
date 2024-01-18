@@ -7,12 +7,15 @@ import useFetch from "../../hooks/useFetch.jsx";
 
 
 const Opinions = () => {
-    const {data, reFetch} = useFetch('http://localhost:8800/api/opinions')
+  const [sortBy, setSortBy] =useState('');
+    const [sortOrder, setSortOrder] = useState('');
+    const {data, reFetch} = useFetch(`http://localhost:8800/api/opinions?sortBy=${sortBy}&sortOrder=${sortOrder}`)
     const [values, setValues] = useState({
         content: '',
         rating: '',
         date: new Date().toISOString().split('T')[0],
       });
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setValues({
@@ -31,6 +34,10 @@ const Opinions = () => {
         }
         return (
           <div >
+            <button onClick={() => {setSortBy('date'); setSortOrder('asc')}}>Sortuj wędług daty rosnąco</button>
+            <button onClick={() => {setSortBy('date'); setSortOrder('desc')}}>Sortuj wędług daty malejąco</button>
+            <button onClick={() => {setSortBy('rating'); setSortOrder('asc')}}>Sortuj wędług oceny rosnąco</button>
+            <button onClick={() => {setSortBy('rating'); setSortOrder('desc')}}>Sortuj wędług oceny malejąco</button>
             <form>
                 <div>
                   <label htmlFor="content">Treść opinii:</label>
