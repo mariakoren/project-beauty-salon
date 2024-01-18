@@ -24,14 +24,17 @@ export const getOpinions = async (req, res) => {
 export const sortOpinions = async (req, res) => {
     try {
         const query = req.query;
-        const sortBy = query.sortBy || 'date'; 
-        const sortOrder = query.sortOrder || 'desc'; 
+        const sortBy = query.sortBy || 'date';
+        const sortOrder = query.sortOrder || 'desc';
+
+        const sortCriteria = {};
+        sortCriteria[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        if (sortBy !== 'date') {
+            sortCriteria['date'] = -1;
+        }
 
         const opinions = await Opinions.find({})
-            .sort({
-                [sortBy]: sortOrder === 'desc' ? -1 : 1,
-                'date': sortOrder === 'desc' && sortBy !== 'date' ? -1 : 1
-            })
+            .sort(sortCriteria)
             .limit(query.limit);
 
         res.status(200).json(opinions);
