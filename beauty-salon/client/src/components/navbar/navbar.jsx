@@ -40,6 +40,7 @@ const NavBar = () => {
                     <div >
                         {user.username}
                         <button className="navButton" onClick={handleLogout}>Wyłoguj się</button>
+                        <button className="navButton" onClick={() => navigate("/myhistory")}>Moje rezerwacji</button>
                     </div> 
                     : 
                     <div className="navItems">

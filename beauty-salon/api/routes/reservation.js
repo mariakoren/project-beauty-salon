@@ -11,8 +11,7 @@ router.post("/", createReservation)
 router.delete("/:id",verifyUser, deleteReservation)
 
 //GET
-router.get("/find", verifyUser, getReservationForPerson)
-router.get("/find", verifyAdmin, getReservationForPerson)
+router.get("/find", getReservationForPerson)
 router.get("/average", verifyAdmin, getAveragePriceForUser)
 //GET ALL
 router.get("/", verifyAdmin, getReservations)

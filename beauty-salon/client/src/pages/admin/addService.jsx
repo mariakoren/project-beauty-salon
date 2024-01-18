@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
+import useFetch from '../../hooks/useFetch';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Pole wymagane'),
@@ -10,7 +11,6 @@ const validationSchema = Yup.object().shape({
   price: Yup.number().min(0, 'Cena nie może być ujemna').required('Pole wymagane'),
   address: Yup.string().required('Pole wymagane'),
   fullDesc: Yup.string(),
-  times: Yup.string().required('Pole wymagane'),
 });
 
 const AddServiceForm = () => {
@@ -22,8 +22,8 @@ const AddServiceForm = () => {
     price: 0,
     address: '',
     fullDesc: '',
-    times: '',
   });
+  const [serviceId, setServiceId] = useState('');
 
   const [errors, setErrors] = useState({});
 
@@ -38,34 +38,59 @@ const AddServiceForm = () => {
   const handleSubmit = async () => {
     try {
       await validationSchema.validate(values, { abortEarly: false });
-      await axios.post("http://localhost:8800/api/services", values, {withCredentials: true});
-      // Zresetuj wartości po udanym dodaniu usługi
-    //   setValues({
-    //     name: '',
-    //     type: '',
-    //     desc: '',
-    //     rating: 0,
-    //     price: 0,
-    //     address: '',
-    //     fullDesc: '',
-    //     times: '',
-    //   });
+      const res = await axios.post("http://localhost:8800/api/services", values, {withCredentials: true});
+      setValues({
+        name: '',
+        type: '',
+        desc: '',
+        rating: 0,
+        price: 0,
+        address: '',
+      });
       setErrors({});
+      setServiceId(res.data._id);
     } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const newErrors = {};
-        err.inner.forEach((error) => {
-          newErrors[error.path] = error.message;
-        });
-        setErrors(newErrors);
-      } else {
-        // Obsługa innych błędów
         console.error(err);
       }
-    }
+    
   };
 
+  const [formData, setFormData] = useState({
+    title: '',
+    timeNumber: [{ number: '' }],
+  });
+
+  const handleTitleChange = (e) => {
+    setFormData({ ...formData, title: e.target.value });
+  };
+
+  const handleNumberChange = (index, e) => {
+    const newTimeNumbers = [...formData.timeNumber];
+    newTimeNumbers[index] = { number: e.target.value };
+    setFormData({ ...formData, timeNumber: newTimeNumbers });
+  };
+
+  const addTimeNumberField = () => {
+    setFormData({
+      ...formData,
+      timeNumber: [...formData.timeNumber, { number: '' }],
+    });
+  };
+
+  const removeTimeNumberField = (index) => {
+    const newTimeNumbers = [...formData.timeNumber];
+    newTimeNumbers.splice(index, 1);
+    setFormData({ ...formData, timeNumber: newTimeNumbers });
+  };
+
+  const handleSubmitTime = async (e) => {
+    e.preventDefault();
+    await axios.post(`http://localhost:8800/api/times/${serviceId}`, formData, {withCredentials: true});
+   
+    
+  };
   return (
+    <>
     <form>
       <div>
         <label htmlFor="name">Nazwa:</label>
@@ -110,15 +135,38 @@ const AddServiceForm = () => {
       </div>
 
       <div>
-        <label htmlFor="times">Godziny:</label>
-        <input type="text" id="times" name="times" value={values.times} onChange={handleChange} />
-        {errors.times && <div>{errors.times}</div>}
-      </div>
-
-      <div>
         <button type="button" onClick={handleSubmit}>Dodaj usługę</button>
       </div>
     </form>
+
+    <form onSubmit={handleSubmitTime}>
+      <div>
+        <label>Nazwa:</label>
+        <input type="text" value={formData.title} onChange={handleTitleChange} />
+      </div>
+      <div>
+        <label>Godzina</label>
+        {formData.timeNumber.map((time, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              value={time.number}
+              onChange={(e) => handleNumberChange(index, e)}
+            />
+            {formData.timeNumber.length > 1 && (
+              <button type="button" onClick={() => removeTimeNumberField(index)}>
+                Usuń
+              </button>
+            )}
+          </div>
+        ))}
+        <button type="button" onClick={addTimeNumberField}>
+          Dodaj nową godzine
+        </button>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+    </>
   );
 };
 

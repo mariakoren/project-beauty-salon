@@ -57,6 +57,20 @@ const EditService = () => {
     `http://localhost:8800/api/services`
   );
 
+  const handleDeleteClick = async (id) => { 
+    console.log(id)
+    try {
+      await axios.delete(`http://localhost:8800/api/services/${id}`, {withCredentials: true});
+      reFetch();
+
+      console.log('Usunięto pomyślnie');
+    } catch (error) {
+      console.error('Błąd podczas usuwania:', error);
+    }
+  };
+
+
+
   return (
     <>
       <ul>
@@ -66,6 +80,7 @@ const EditService = () => {
               <div>
                 <h3>{service.name}</h3>
                 <button onClick={()=>handleEditClick(service._id)}>Edytuj</button>
+                <button onClick={()=>handleDeleteClick(service._id)}>Usuń</button>
               </div>
             </li>
           ))}

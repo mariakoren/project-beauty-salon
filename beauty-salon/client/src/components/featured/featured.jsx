@@ -7,7 +7,7 @@ import useFetch from "../../hooks/useFetch.jsx";
 
 const Featured = () => {
 
-    const {data, loading, error} = useFetch("http://localhost:8800/api/services/countByType?types=pielegnacjaRak,fryzjerstwo,pielegnacjaTwarzy");
+    const {data, loading, error} = useFetch("http://localhost:8800/api/services/countByType?types=pielegnacjaRak,pielegnacjaTwarzy,pielegnacjaWlosow");
     return (
         <div className="featured">
             {loading ? "Loading please wait" : 
@@ -30,7 +30,7 @@ const Featured = () => {
             <div className="featuredItem">
                 <img src={fryzjerstwo} alt="" className="featuredImage" />
                 <div className="featuredTitle">
-                    <h1>Fryzjerstwo</h1>
+                    <h1>Pielegnacja włosów</h1>
                     <h2>{data[2]} zabiegi</h2>
                 </div>
             </div> </>}
