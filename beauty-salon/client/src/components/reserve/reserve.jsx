@@ -3,9 +3,9 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 import "./reserve.css";
 import useFetch from "../../hooks/useFetch";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { SearchContext } from "../../context/SearchContext";
-import axios from "axios";
+import axios, { all } from "axios";
 import { useNavigate } from "react-router-dom";
 import {AuthContext} from "../../context/AuthContext";
 
@@ -14,13 +14,14 @@ const Reserve = ({ setOpen, serviceId}) => {
   const { data, loading, error } = useFetch(`http://localhost:8800/api/services/time/${serviceId}`);
   const { dates } = useContext(SearchContext);
   const {user} = useContext(AuthContext);
+  const navigate = useNavigate();
+
 
   const getDatesInRange = (startDate, endDate) => {
+    
     const start = new Date(startDate);
     const end = new Date(endDate);
-
     const date = new Date(start.getTime());
-
     const dates = [];
 
     while (date <= end) {
@@ -29,9 +30,12 @@ const Reserve = ({ setOpen, serviceId}) => {
     }
 
     return dates;
+
+
   };
 
   const alldates = getDatesInRange(dates[0].startDate, dates[0].endDate);
+ 
 
   const isAvailable = (timeNumber) => {
     const isFound = timeNumber.unavailableDates.some((date) =>
@@ -51,37 +55,45 @@ const Reserve = ({ setOpen, serviceId}) => {
     );
   };
 
-  const navigate = useNavigate();
+
 
   const handleClick = async () => {
-    try {
-      await Promise.all(
-        selectedTimes.map((timeId) => {
-          const res = axios.put(`http://localhost:8800/api/times/availability/${timeId}`, {
-            dates: alldates,
-          });
-          return res.data;
-        })
-      );
-      setOpen(false);
-
-
-
-      try {
-        await axios.post('http://localhost:8800/api/reservation', {
-          userId: user._id,
-          serviceId: serviceId,
-          date: alldates[0],
-          time: selectedTimes[0]
-        });
-      } catch (error) {
-        console.error("Błąd Axios:", error);
-      }
-
+    if (alldates.length > 1){
       navigate("/");
-        
+      alert("wróć i wybierz tylko 1 dzień");
+      return
+    } else {
+      try {
+        await Promise.all(
+          selectedTimes.map((timeId) => {
+            const res = axios.put(`http://localhost:8800/api/times/availability/${timeId}`, {
+              dates: alldates,
+            });
+            return res.data;
+          })
+        );
+        setOpen(false);
+  
+  
+  
+        try {
+          await axios.post('http://localhost:8800/api/reservation', {
+            userId: user._id,
+            serviceId: serviceId,
+            date: alldates[0],
+            time: selectedTimes[0]
+          });
+        } catch (error) {
+          console.error("Błąd Axios:", error);
+        }
+  
+        navigate("/");
+          
+      }
+      catch (err) {}
+
     }
-    catch (err) {}
+    
   };
   return (
     <div className="reserve">
