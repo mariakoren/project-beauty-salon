@@ -1,5 +1,5 @@
 import express from "express";
-import { createReservation, deleteReservation, getAveragePriceForUser, getReservationForPerson, getReservations } from "../controllers/reservation.js";
+import { createReservation, getAveragePriceForUser, getReservationForPerson, getReservations, confirmedReservation, deleteReservation } from "../controllers/reservation.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 const router = express.Router();
 
@@ -8,13 +8,15 @@ router.post("/", createReservation)
 
 
 //DELETE
-router.delete("/:id",verifyUser, deleteReservation)
-
+// router.delete("/:id",verifyUser, deleteReservation)
+router.delete("/:id",  deleteReservation)
 //GET
 router.get("/find", getReservationForPerson)
 router.get("/average", verifyAdmin, getAveragePriceForUser)
 //GET ALL
 router.get("/", verifyAdmin, getReservations)
+
+router.put('/:id/confirm', confirmedReservation);
 
 
 

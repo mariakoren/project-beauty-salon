@@ -56,6 +56,7 @@ const ServiceSchema = new mongoose.Schema({
                 ],
             dayTitle: {
                 type: String,
+                unique: true
            
             }
         }]

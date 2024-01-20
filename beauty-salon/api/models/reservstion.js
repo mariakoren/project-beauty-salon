@@ -15,7 +15,12 @@ const ReservationSchema = new mongoose.Schema({
             timeTitle: String
         },
         required: true
-    }
+    },
+    status: {
+        type: String,
+        enum: ['made', 'confirmed'],
+        default: 'made'
+    },
 
 },{timestamps: true})
 
