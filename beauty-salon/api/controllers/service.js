@@ -104,16 +104,44 @@ export const getServiceTimes = async (req, res, next) => {
 // };
 
 
+// export const getFilteredServices = async (req, res) => {
+//     try {
+//         const pattern = req.query.pattern;
+//         const searchConditions = {
+//             $or: [
+//                 { type: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+//                 { name: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+//                 { desc: { $regex: pattern.split('').join('.*'), $options: 'i' } }
+//             ]
+//         };
+//         const services = await Service.find(searchConditions).limit(req.query.limit);
+//         res.status(200).json(services);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// };
+
 export const getFilteredServices = async (req, res) => {
     try {
         const pattern = req.query.pattern;
+        const dateTitle = req.query.dateTitle;
+
         const searchConditions = {
-            $or: [
-                { type: { $regex: pattern.split('').join('.*'), $options: 'i' } },
-                { name: { $regex: pattern.split('').join('.*'), $options: 'i' } },
-                { desc: { $regex: pattern.split('').join('.*'), $options: 'i' } }
+            $and: [
+                {
+                    $or: [
+                        { type: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+                        { name: { $regex: pattern.split('').join('.*'), $options: 'i' } },
+                        { desc: { $regex: pattern.split('').join('.*'), $options: 'i' } }
+                    ]
+                },
+                {
+                    'dates.dayTitle': dateTitle,
+                    'dates.times': { $elemMatch: { isAvaible: true } }
+                }
             ]
         };
+
         const services = await Service.find(searchConditions).limit(req.query.limit);
         res.status(200).json(services);
     } catch (err) {

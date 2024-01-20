@@ -13,9 +13,14 @@ const List = () => {
     const [service, setService] = useState(location.state.service);
     const [date, setDate] = useState(location.state.date);
     const [openDate, setOpenDate] = useState(false);
+    const originalDate = new Date(date);
+      const year = originalDate.getFullYear();
+      const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+      const day = String(originalDate.getDate()).padStart(2, '0');
+      const formattedDateResult = `${year}-${month}-${day}`;
 
     // const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
-    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/search?pattern=${service}`);
+    const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services/search?pattern=${service}&dateTitle=${formattedDateResult}`);
 
 
     const handleClick = ()=> {

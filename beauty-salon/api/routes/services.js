@@ -28,7 +28,7 @@ router.get("/countByType", countByType)
 router.get("/time/:id", getServiceTimes )
 
 
-// Zapytanie 1: Pobranie danych o dostępnych dniach oraz terminach
+//  Pobranie danych o dostępnych dniach oraz terminach
 router.get('/:serviceId/dates', async (req, res) => {
     const { serviceId } = req.params;
 
@@ -41,7 +41,7 @@ router.get('/:serviceId/dates', async (req, res) => {
     }
 });
 
-// Zapytanie 2: Wyświetlenie dostępnych godzin dla danej usługi i dnia
+// Wyświetlenie dostępnych godzin dla danej usługi i dnia
 router.get('/:serviceId/availability', async (req, res) => {
     const { serviceId } = req.params;
     const { dayTitle } = req.query;
