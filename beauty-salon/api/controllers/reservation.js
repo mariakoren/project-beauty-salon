@@ -1,6 +1,7 @@
 import Reservation from "../models/reservstion.js";
 import User from "../models/user.js";
 import Service from "../models/service.js";
+import mongoose from 'mongoose';
 
 // export const createReservation = async (req, res, next) => {
 //     const newReservation = new Reservation(req.body);
@@ -81,8 +82,25 @@ export const createReservation = async (req, res, next) => {
 
 export const getReservationForPerson = async (req, res) => {
     const userIdParam = req.query.id;
+
+    // Check if userIdParam is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userIdParam)) {
+        return res.status(400).json({ message: 'Invalid user ID format.' });
+    }
+
     try {
+        const user = await User.findById(userIdParam);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Nie istnieje użytkownik o podanym ID.' });
+        }
+
         const reservations = await Reservation.find({ userId: userIdParam });
+
+        if (reservations.length === 0) {
+            return res.status(404).json({ message: 'W tej chwili nie masz żadnych rezerwacji.' });
+        }
+
         res.status(200).json(reservations);
     } catch (err) {
         console.error(err);
@@ -100,6 +118,9 @@ export const getReservations = async (req, res) => {
 
 export const getAveragePriceForUser = async (req, res) => {
     const userIdParam = req.query.id;
+    if (!userIdParam){
+        return res.status(404).json({message: "użytkownik nie został podany"})
+    }
     try {
         const reservations = await Reservation.find({ userId: userIdParam });
         if (reservations.length === 0) {
@@ -141,24 +162,63 @@ export const confirmedReservation = async (req, res) => {
 
 export const deleteReservation = async (req, res) => {
     try {
-      const reservationId = req.params.id;
-      const deletedReservation = await Reservation.findByIdAndDelete(reservationId);
-      if (!deletedReservation) {
-        return res.status(404).json({ error: 'Reservation not found' });
-      }
-      const { serviceId, dateTime } = deletedReservation;
-      const updatedService = await Service.findOneAndUpdate(
-        { _id: serviceId, 'dates.dayTitle': dateTime.dateTitle, 'dates.times.title': dateTime.timeTitle },
-        { $set: { 'dates.$[dateElem].times.$[timeElem].isAvaible': true } },
-        { arrayFilters: [{ 'dateElem.dayTitle': dateTime.dateTitle }, { 'timeElem.title': dateTime.timeTitle }], new: true }
-      );
-  
-      if (!updatedService) {
-        return res.status(404).json({ error: 'Service or date/time not found in the service' });
-      }
-  
-      res.status(200).json({ message: 'Reservation deleted and service updated successfully' });
+        const reservationId = req.params.id;
+        const reservationToDelete = await Reservation.findById(reservationId);
+
+        if (!reservationToDelete) {
+            return res.status(404).json({ error: 'Reservation not found' });
+        }
+
+        if (reservationToDelete.status === 'confirmed') {
+            return res.status(400).json({ error: 'Reservation is already confirmed. Deletion is not allowed.' });
+        }
+
+        const deletedReservation = await Reservation.findByIdAndDelete(reservationId);
+
+        if (!deletedReservation) {
+            return res.status(404).json({ error: 'Reservation not found' });
+        }
+
+        const { serviceId, dateTime } = deletedReservation;
+        const updatedService = await Service.findOneAndUpdate(
+            { _id: serviceId, 'dates.dayTitle': dateTime.dateTitle, 'dates.times.title': dateTime.timeTitle },
+            { $set: { 'dates.$[dateElem].times.$[timeElem].isAvaible': true } },
+            { arrayFilters: [{ 'dateElem.dayTitle': dateTime.dateTitle }, { 'timeElem.title': dateTime.timeTitle }], new: true }
+        );
+
+        if (!updatedService) {
+            return res.status(404).json({ error: 'Service or date/time not found in the service' });
+        }
+
+        res.status(200).json({ message: 'Reservation deleted and service updated successfully' });
     } catch (err) {
-      res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message });
     }
-}
+};
+
+
+export const deleteReservationByAdmin = async (req, res) => {
+    try {
+        const reservationId = req.params.id;
+        const reservationToDelete = await Reservation.findById(reservationId);
+        if (!reservationToDelete) {
+            return res.status(404).json({ error: 'Reservation not found' });
+        }
+        const deletedReservation = await Reservation.findByIdAndDelete(reservationId);
+        if (!deletedReservation) {
+            return res.status(404).json({ error: 'Reservation not found' });
+        }
+        const { serviceId, dateTime } = deletedReservation;
+        const updatedService = await Service.findOneAndUpdate(
+            { _id: serviceId, 'dates.dayTitle': dateTime.dateTitle, 'dates.times.title': dateTime.timeTitle },
+            { $set: { 'dates.$[dateElem].times.$[timeElem].isAvaible': true } },
+            { arrayFilters: [{ 'dateElem.dayTitle': dateTime.dateTitle }, { 'timeElem.title': dateTime.timeTitle }], new: true }
+        );
+        if (!updatedService) {
+            return res.status(404).json({ error: 'Service or date/time not found in the service' });
+        }
+        res.status(200).json({ message: 'Reservation deleted and service updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
