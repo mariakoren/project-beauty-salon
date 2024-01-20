@@ -17,12 +17,33 @@ export const createReservation = async (req, res, next) => {
     const newReservation = new Reservation(req.body);
     try {
         const savedReservation = await newReservation.save();
-        const { serviceId, dateTime: { dateTitle, timeTitle } } = req.body;
-        await Service.findOneAndUpdate(
+        const { userId, serviceId, dateTime: { dateTitle, timeTitle } } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+        const service = await Service.findOne({
+            _id: serviceId,
+            'dates.dayTitle': dateTitle,
+            'dates.times.title': timeTitle
+        });
+        if (!service) {
+            return res.status(404).send("Service not found");
+        }
+        const timeSlot = service.dates.find(date => date.dayTitle === dateTitle)
+                                       .times.find(time => time.title === timeTitle);
+        if (!timeSlot.isAvaible) {
+            return res.status(400).send("The slot is already reserved.");
+        }
+        const updatedService = await Service.findOneAndUpdate(
             { _id: serviceId, 'dates.dayTitle': dateTitle, 'dates.times.title': timeTitle },
             { $set: { 'dates.$.times.$[elem].isAvaible': false } },
             { arrayFilters: [{ 'elem.title': timeTitle }] }
         );
+        if (!updatedService) {
+            return res.status(404).send("Service not found");
+        }
+
         res.status(200).json(savedReservation);
     } catch (err) {
         next(err);
