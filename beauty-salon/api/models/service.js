@@ -33,9 +33,6 @@ const ServiceSchema = new mongoose.Schema({
         type:String,
         required: true
     },
-    // times: {
-    //     type: [String],
-    // },
     ratingDetail: {
         type: String,
         enum: ['bardzo polecane', 'polecane', 'nie polecane']

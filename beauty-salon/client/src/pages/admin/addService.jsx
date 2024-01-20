@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
-import useFetch from '../../hooks/useFetch';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Pole wymagane'),
-  type: Yup.string().required('Pole wymagane'),
-  desc: Yup.string(),
-  rating: Yup.number().min(1, 'Ocena musi być większa lub równa 1').max(5, 'Ocena musi być mniejsza lub równa 5'),
-  price: Yup.number().min(0, 'Cena nie może być ujemna').required('Pole wymagane'),
-  address: Yup.string().required('Pole wymagane'),
-  fullDesc: Yup.string(),
+  dates: Yup.array().of(
+    Yup.object().shape({
+      dayTitle: Yup.string().required('Pole wymagane'),
+      times: Yup.array().of(
+        Yup.object().shape({
+          title: Yup.string().required('Pole wymagane'),
+          isAvailable: Yup.boolean().required('Pole wymagane'),
+        })
+      ),
+    })
+  ),
 });
 
 const AddServiceForm = () => {
@@ -22,9 +25,15 @@ const AddServiceForm = () => {
     price: 0,
     address: '',
     fullDesc: '',
+    dates: [
+      {
+        dayTitle: '',
+        times: [{ title: '', isAvailable: false }],
+      },
+    ],
   });
-  const [serviceId, setServiceId] = useState('');
 
+  const [serviceId, setServiceId] = useState('');
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -35,10 +44,62 @@ const AddServiceForm = () => {
     });
   };
 
+  const handleDateChange = (index, e) => {
+    const newDates = [...values.dates];
+    newDates[index].dayTitle = e.target.value;
+    setValues({
+      ...values,
+      dates: newDates,
+    });
+  };
+
+  const handleTimeChange = (dateIndex, timeIndex, property, value) => {
+    const newDates = [...values.dates];
+    newDates[dateIndex].times[timeIndex][property] = value;
+    setValues({
+      ...values,
+      dates: newDates,
+    });
+  };
+
+  const addDateField = () => {
+    setValues({
+      ...values,
+      dates: [...values.dates, { dayTitle: '', times: [{ title: '', isAvailable: false }] }],
+    });
+  };
+
+  const removeDateField = (index) => {
+    const newDates = [...values.dates];
+    newDates.splice(index, 1);
+    setValues({
+      ...values,
+      dates: newDates,
+    });
+  };
+
+  const addTimeField = (dateIndex) => {
+    const newDates = [...values.dates];
+    newDates[dateIndex].times = [...newDates[dateIndex].times, { title: '', isAvailable: false }];
+    setValues({
+      ...values,
+      dates: newDates,
+    });
+  };
+
+  const removeTimeField = (dateIndex, timeIndex) => {
+    const newDates = [...values.dates];
+    newDates[dateIndex].times.splice(timeIndex, 1);
+    setValues({
+      ...values,
+      dates: newDates,
+    });
+  };
+
   const handleSubmit = async () => {
     try {
       await validationSchema.validate(values, { abortEarly: false });
-      const res = await axios.post("http://localhost:8800/api/services", values, {withCredentials: true});
+      const res = await axios.post('http://localhost:8800/api/services', values, { withCredentials: true });
       setValues({
         name: '',
         type: '',
@@ -46,52 +107,32 @@ const AddServiceForm = () => {
         rating: 0,
         price: 0,
         address: '',
+        fullDesc: '',
+        dates: [
+          {
+            dayTitle: '',
+            times: [{ title: '', isAvailable: false }],
+          },
+        ],
       });
       setErrors({});
       setServiceId(res.data._id);
     } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const newErrors = {};
+        err.inner.forEach((error) => {
+          newErrors[error.path] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
         console.error(err);
       }
-    
+    }
   };
 
-  const [formData, setFormData] = useState({
-    title: '',
-    timeNumber: [{ number: '' }],
-  });
-
-  const handleTitleChange = (e) => {
-    setFormData({ ...formData, title: e.target.value });
-  };
-
-  const handleNumberChange = (index, e) => {
-    const newTimeNumbers = [...formData.timeNumber];
-    newTimeNumbers[index] = { number: e.target.value };
-    setFormData({ ...formData, timeNumber: newTimeNumbers });
-  };
-
-  const addTimeNumberField = () => {
-    setFormData({
-      ...formData,
-      timeNumber: [...formData.timeNumber, { number: '' }],
-    });
-  };
-
-  const removeTimeNumberField = (index) => {
-    const newTimeNumbers = [...formData.timeNumber];
-    newTimeNumbers.splice(index, 1);
-    setFormData({ ...formData, timeNumber: newTimeNumbers });
-  };
-
-  const handleSubmitTime = async (e) => {
-    e.preventDefault();
-    await axios.post(`http://localhost:8800/api/times/${serviceId}`, formData, {withCredentials: true});
-   
-    
-  };
   return (
     <>
-    <form>
+      <form>
       <div>
         <label htmlFor="name">Nazwa:</label>
         <input type="text" id="name" name="name" value={values.name} onChange={handleChange} />
@@ -134,38 +175,66 @@ const AddServiceForm = () => {
         {errors.fullDesc && <div>{errors.fullDesc}</div>}
       </div>
 
-      <div>
-        <button type="button" onClick={handleSubmit}>Dodaj usługę</button>
-      </div>
-    </form>
-
-    <form onSubmit={handleSubmitTime}>
-      <div>
-        <label>Nazwa:</label>
-        <input type="text" value={formData.title} onChange={handleTitleChange} />
-      </div>
-      <div>
-        <label>Godzina</label>
-        {formData.timeNumber.map((time, index) => (
-          <div key={index}>
+        {values.dates.map((date, dateIndex) => (
+          <div key={dateIndex}>
+            <label htmlFor={`dates[${dateIndex}].dayTitle`}>Day Title:</label>
             <input
+              id={`dates[${dateIndex}].dayTitle`}
+              name={`dates[${dateIndex}].dayTitle`}
               type="text"
-              value={time.number}
-              onChange={(e) => handleNumberChange(index, e)}
+              value={date.dayTitle}
+              onChange={(e) => handleDateChange(dateIndex, e)}
             />
-            {formData.timeNumber.length > 1 && (
-              <button type="button" onClick={() => removeTimeNumberField(index)}>
-                Usuń
+
+            {date.times.map((time, timeIndex) => (
+              <div key={timeIndex}>
+                <label htmlFor={`dates[${dateIndex}].times[${timeIndex}].title`}>Time Title:</label>
+                <input
+                  id={`dates[${dateIndex}].times[${timeIndex}].title`}
+                  name={`dates[${dateIndex}].times[${timeIndex}].title`}
+                  type="text"
+                  value={time.title}
+                  onChange={(e) => handleTimeChange(dateIndex, timeIndex, 'title', e.target.value)}
+                />
+
+                <label htmlFor={`dates[${dateIndex}].times[${timeIndex}].isAvailable`}>Is Available:</label>
+                <input
+                  id={`dates[${dateIndex}].times[${timeIndex}].isAvailable`}
+                  name={`dates[${dateIndex}].times[${timeIndex}].isAvailable`}
+                  type="checkbox"
+                  checked={time.isAvailable}
+                  onChange={(e) => handleTimeChange(dateIndex, timeIndex, 'isAvailable', e.target.checked)}
+                />
+
+                {date.times.length > 1 && (
+                  <button type="button" onClick={() => removeTimeField(dateIndex, timeIndex)}>
+                    Remove Time
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button type="button" onClick={() => addTimeField(dateIndex)}>
+              Add Time
+            </button>
+
+            {values.dates.length > 1 && (
+              <button type="button" onClick={() => removeDateField(dateIndex)}>
+                Remove Date
               </button>
             )}
           </div>
         ))}
-        <button type="button" onClick={addTimeNumberField}>
-          Dodaj nową godzine
+        <button type="button" onClick={addDateField}>
+          Add Date
         </button>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+
+        <div>
+          <button type="button" onClick={handleSubmit}>
+            Dodaj usługę
+          </button>
+        </div>
+      </form>
     </>
   );
 };
