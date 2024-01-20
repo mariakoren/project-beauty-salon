@@ -32,6 +32,16 @@ const Statistics = () => {
 const UserReservations = ({ userId }) => {
   const { data: reservationData, loading: reservationLoading, error: reservationError, reFetch: reservationReFetch } =
     useFetch(`http://localhost:8800/api/reservation/find/?id=${userId}`);
+
+    const handleConfirm = async (id) => {
+      try {
+        const response = await axios.put(`http://localhost:8800/api/reservation/${id}/confirm`);
+        reservationReFetch();
+        console.log('Reservation confirmed:', response.data);
+      } catch (error) {
+        console.error('Error confirming reservation:', error.response.data);
+      }
+    };
   return (
     <div>
       {reservationData.map((reservation) => (
@@ -39,7 +49,15 @@ const UserReservations = ({ userId }) => {
             <div>
                 <ul>
                     <li><ServiceDetails serviceId={reservation.serviceId}/> </li>
-                    <li>{reservation.date}</li>
+                    <li>{reservation.dateTime.dateTitle} {reservation.dateTime.timeTitle}</li>
+                    <li>{reservation._id}</li>
+                    <li>{reservation.status}</li>
+                    {
+                      reservation.status==="made" ? 
+                          <button onClick={() => handleConfirm(reservation._id)}>potwierdź rezerwacje</button> :
+                          <></>
+                    }
+
                     <br/>
                 </ul>
                 <br/>
