@@ -41,7 +41,7 @@ export const updateTimeAvailability = async (req, res, next) => {
         { "timeNumber._id": req.params.id },
         {
           $push: {
-            "timeNumber.$.unavailableDates": req.body.dates
+            "timeNumber.$.unavailableDates": req.body.date
           },
         }
       );

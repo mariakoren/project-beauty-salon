@@ -12,8 +12,8 @@ const Statistics = () => {
   return (
     <div>
       <ul>
-        {userData &&
-          userData.map((user) => (
+        {userData && userData.reduce((accumulator, user) => {
+          accumulator.push(
             <li key={user.id}>
               <div>
                 <h3>Statystyki dla {user.username}</h3>
@@ -21,7 +21,9 @@ const Statistics = () => {
                 <UserReservations userId={user._id} />
               </div>
             </li>
-          ))}
+          );
+          return accumulator;
+        }, [])}
       </ul>
     </div>
   );
@@ -35,7 +37,6 @@ const UserReservations = ({ userId }) => {
       {reservationData.map((reservation) => (
         <li key={reservation.id}>
             <div>
-                {/* {reservation.serviceId} */}
                 <ul>
                     <li><ServiceDetails serviceId={reservation.serviceId}/> </li>
                     <li>{reservation.date}</li>

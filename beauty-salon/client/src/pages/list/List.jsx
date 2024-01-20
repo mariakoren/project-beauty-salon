@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 const List = () => {
     const location = useLocation();
     const [service, setService] = useState(location.state.service);
-    const [dates, setDates] = useState(location.state.dates);
+    const [date, setDate] = useState(location.state.date);
     const [openDate, setOpenDate] = useState(false);
 
     // const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/services?type=${service}`);
@@ -41,7 +41,7 @@ const List = () => {
                         </div>
                         <div className="lsItem">
                             <label>Interesujące dni</label>
-                            <span onClick={()=> setOpenDate(!openDate)}>{`${format(dates[0].startDate, 'MM/dd/yyyy')} do ${format(dates[0].endDate, 'MM/dd/yyyy')}  `}</span>
+                            <span onClick={()=> setOpenDate(!openDate)}>{`${format(date, 'MM/dd/yyyy')}`}</span>
                             {openDate && (
                                 // <DateRange
                                 //   onChange={(item) => setDates([item.selection])}
@@ -50,10 +50,10 @@ const List = () => {
                                 // />
                                 <DatePicker
                             //   selected={dates[0]} 
-                              onChange={date => setDates([date])} 
-                              minDate={new Date()} 
-                              className="date"
-                            />
+                                      onChange={date => setDate(date)} 
+                                      minDate={new Date()} 
+                                      className="date"
+                                    />
                               )}
                         </div>
                        

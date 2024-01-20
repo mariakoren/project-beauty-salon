@@ -10,90 +10,80 @@ import { useNavigate } from "react-router-dom";
 import {AuthContext} from "../../context/AuthContext";
 
 const Reserve = ({ setOpen, serviceId}) => {
-  const [selectedTimes, setSelectedTimes] = useState([]);
-  const { data, loading, error } = useFetch(`http://localhost:8800/api/services/time/${serviceId}`);
-  const { dates } = useContext(SearchContext);
+  // const { data } = useFetch(`http://localhost:8800/api/services/${serviceId}/availability`);
+  const { date } = useContext(SearchContext);
   const {user} = useContext(AuthContext);
   const navigate = useNavigate();
+  const [selectedTimes, setSelectedTimes] = useState(null);
+  const [data, setData] = useState(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      // Sformatuj datę
+      const originalDate = new Date(date);
+      const year = originalDate.getFullYear();
+      const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+      const day = String(originalDate.getDate()).padStart(2, '0');
+      const formattedDateResult = `${year}-${month}-${day}`;
 
-  const getDatesInRange = (startDate, endDate) => {
-    
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const date = new Date(start.getTime());
-    const dates = [];
+      setData(formattedDateResult);
 
-    while (date <= end) {
-      dates.push(new Date(date).getTime());
-      date.setDate(date.getDate() + 1);
-    }
+      // Wykonaj zapytanie Axios
+      try {
+        const response = await axios.get(`http://localhost:8800/api/services/${serviceId}/availability`, {
+          params: {
+            dayTitle: formattedDateResult
+          }
+        });
 
-    return dates;
+        console.log(`Dostępne godziny dla usługi w dniu ${formattedDateResult}:`, response.data);
+        setData(response.data);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.log(`Brak danych dla wybranego dnia. ${formattedDateResult}`);
+        } else {
+          console.error('Błąd podczas pobierania danych:', error);
+        }
+      }
+    };
 
+    fetchData();
+  }, [date]);
 
-  };
+  
 
-  const alldates = getDatesInRange(dates[0].startDate, dates[0].endDate);
- 
-
-  const isAvailable = (timeNumber) => {
-    const isFound = timeNumber.unavailableDates.some((date) =>
-      alldates.includes(new Date(date).getTime())
-    );
-
-    return !isFound;
-  };
-
-  const handleSelect = (e) => {
-    const checked = e.target.checked;
-    const value = e.target.value;
-    setSelectedTimes(
-      checked
-        ? [...selectedTimes, value]
-        : selectedTimes.filter((item) => item !== value)
-    );
+  const handleSelect= (event) => {
+    setSelectedTimes(event.target.value);
   };
 
 
 
   const handleClick = async () => {
-    if (alldates.length > 1){
-      navigate("/");
-      alert("wróć i wybierz tylko 1 dzień");
-      return
-    } else {
-      try {
-        await Promise.all(
-          selectedTimes.map((timeId) => {
-            const res = axios.put(`http://localhost:8800/api/times/availability/${timeId}`, {
-              dates: alldates,
-            });
-            return res.data;
-          })
-        );
-        setOpen(false);
-  
-  
-  
-        try {
-          await axios.post('http://localhost:8800/api/reservation', {
-            userId: user._id,
-            serviceId: serviceId,
-            date: alldates[0],
-            time: selectedTimes[0]
-          });
-        } catch (error) {
-          console.error("Błąd Axios:", error);
+    const originalDate = new Date(date);
+      const year = originalDate.getFullYear();
+      const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+      const day = String(originalDate.getDate()).padStart(2, '0');
+      const formattedDateResult = `${year}-${month}-${day}`;
+      const reservationData = {
+        userId: user._id,
+        serviceId: serviceId,
+        dateTime: {
+          dateTitle: formattedDateResult,
+          timeTitle: selectedTimes
         }
-  
-        navigate("/");
-          
-      }
-      catch (err) {}
+      };
+      
+      axios.post('http://localhost:8800/api/reservation', reservationData)
+        .then(response => {
+          console.log('Reservation created successfully:', response.data);
+          // Handle success if needed
+        })
+        .catch(error => {
+          console.error('Error creating reservation:', error.response ? error.response.data : error.message);
+          // Handle error if needed
+        });
 
-    }
-    
+      navigate("/");     
   };
   return (
     <div className="reserve">
@@ -104,26 +94,21 @@ const Reserve = ({ setOpen, serviceId}) => {
           onClick={() => setOpen(false)}
         />
         <span>Wybierz godzinę:</span>
-        {data.map((item) => (
-          <div className="rItem" key={item._id}>
-            <div className="rItemInfo">
-              <div className="rTitle">{item.title}</div>
+
+        {
+          Array.isArray(data) && data.map((item) => (
+            <div key={item._id}>
+              <input
+                type="radio"
+                id={`radio_${item._id}`}
+                name="selectedTime"
+                value={item.title}
+                onChange={handleSelect}
+              />
+              <label htmlFor={`radio_${item._id}`}>{item.title}</label>
             </div>
-            <div className="rSelectTime">
-              {item.timeNumber.map((timeNum) => (
-                <div className="time">
-                  <label>{timeNum.number}</label>
-                  <input
-                    type="checkbox"
-                    value={timeNum._id}
-                    onChange={handleSelect}
-                    disabled={!isAvailable(timeNum)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          ))
+        }
          <button onClick={handleClick} className="rButton">
           Zarezerwuj teraz!
         </button>

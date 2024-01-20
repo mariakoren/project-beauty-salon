@@ -16,8 +16,8 @@ const SearchItem = ({item}) => {
             </div>
             <div className="siDetails">
                 <div className="siRating">
-                    <span>Excellent</span>
-                    <button>8.9</button>
+                    <span>{item.ratingDetail}</span>
+                    <button>{item.rating}</button>
                     <Link to={`http://localhost:3000/services/${item._id}`}>
                         <button className='siCheckButton'>zobacz dostępność</button>
                     </Link>
