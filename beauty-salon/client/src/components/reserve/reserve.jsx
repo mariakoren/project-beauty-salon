@@ -19,7 +19,6 @@ const Reserve = ({ setOpen, serviceId}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Sformatuj datę
       const originalDate = new Date(date);
       const year = originalDate.getFullYear();
       const month = String(originalDate.getMonth() + 1).padStart(2, '0');
@@ -27,8 +26,6 @@ const Reserve = ({ setOpen, serviceId}) => {
       const formattedDateResult = `${year}-${month}-${day}`;
 
       setData(formattedDateResult);
-
-      // Wykonaj zapytanie Axios
       try {
         const response = await axios.get(`http://localhost:8800/api/services/${serviceId}/availability`, {
           params: {
@@ -76,11 +73,9 @@ const Reserve = ({ setOpen, serviceId}) => {
       axios.post('http://localhost:8800/api/reservation', reservationData)
         .then(response => {
           console.log('Reservation created successfully:', response.data);
-          // Handle success if needed
         })
         .catch(error => {
           console.error('Error creating reservation:', error.response ? error.response.data : error.message);
-          // Handle error if needed
         });
 
       navigate("/");     
