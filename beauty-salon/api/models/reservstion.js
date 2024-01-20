@@ -9,14 +9,14 @@ const ReservationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    date: {
-        type: Date,
-        required: true
-    },
-    time: {
-        type: String,
+    dateTime: {
+        type: {
+            dateTitle: String,
+            timeTitle: String
+        },
         required: true
     }
+
 },{timestamps: true})
 
 export default mongoose.model("Reservation", ReservationSchema);

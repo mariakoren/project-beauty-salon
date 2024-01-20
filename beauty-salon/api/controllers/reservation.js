@@ -2,21 +2,36 @@ import Reservation from "../models/reservstion.js";
 import User from "../models/user.js";
 import Service from "../models/service.js";
 
+// export const createReservation = async (req, res, next) => {
+//     const newReservation = new Reservation(req.body);
+//     try {
+//         const savedReservation = await newReservation.save();
+//         res.status(200).json(savedReservation)
+//     } catch(err){
+//         // res.status(500).json(err);
+//         next(err)
+//     }
+// }
+
 export const createReservation = async (req, res, next) => {
     const newReservation = new Reservation(req.body);
     try {
         const savedReservation = await newReservation.save();
-        res.status(200).json(savedReservation)
-    } catch(err){
-        // res.status(500).json(err);
-        next(err)
+        const { serviceId, dateTime: { dateTitle, timeTitle } } = req.body;
+        await Service.findOneAndUpdate(
+            { _id: serviceId, 'dates.dayTitle': dateTitle, 'dates.times.title': timeTitle },
+            { $set: { 'dates.$.times.$[elem].isAvaible': false } },
+            { arrayFilters: [{ 'elem.title': timeTitle }] }
+        );
+        res.status(200).json(savedReservation);
+    } catch (err) {
+        next(err);
     }
-}
+};
 
 
 
 export const deleteReservation = async (req, res) => {
-
     try {
         const deletedReservation = await Reservation.findByIdAndDelete(
             req.params.id

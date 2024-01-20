@@ -9,7 +9,8 @@ import useFetch from "../../hooks/useFetch.jsx";
 const Opinions = () => {
   const [sortBy, setSortBy] =useState('');
     const [sortOrder, setSortOrder] = useState('');
-    const {data, reFetch} = useFetch(`http://localhost:8800/api/opinions?sortBy=${sortBy}&sortOrder=${sortOrder}`)
+    // const {data, reFetch} = useFetch(`http://localhost:8800/api/opinions?sortBy=${sortBy}&sortOrder=${sortOrder}`)
+    const {data, reFetch} = useFetch('http://localhost:8800/api/opinions')
     const [values, setValues] = useState({
         content: '',
         rating: '',
