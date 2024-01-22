@@ -80,33 +80,33 @@ export const createReservation = async (req, res, next) => {
 //     }
 // }
 
-export const getReservationForPerson = async (req, res) => {
+export const getReservationForPerson = (req, res) => {
     const userIdParam = req.query.id;
-
-    // Check if userIdParam is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(userIdParam)) {
         return res.status(400).json({ message: 'Invalid user ID format.' });
     }
 
-    try {
-        const user = await User.findById(userIdParam);
+    User.findById(userIdParam)
+        .then((user) => {
+            if (!user) {
+                return res.status(404).json({ message: 'Nie istnieje użytkownik o podanym ID.' });
+            }
 
-        if (!user) {
-            return res.status(404).json({ message: 'Nie istnieje użytkownik o podanym ID.' });
-        }
-
-        const reservations = await Reservation.find({ userId: userIdParam });
-
-        if (reservations.length === 0) {
-            return res.status(404).json({ message: 'W tej chwili nie masz żadnych rezerwacji.' });
-        }
-
-        res.status(200).json(reservations);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Błąd podczas przetwarzania zapytania.' });
-    }
+            return Reservation.find({ userId: userIdParam });
+        })
+        .then((reservations) => {
+            if (reservations.length === 0) {
+                return res.status(404).json({ message: 'W tej chwili nie masz żadnych rezerwacji.' });
+            }
+            res.status(200).json(reservations);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: 'Błąd podczas przetwarzania zapytania.' });
+        });
 };
+
+
 export const getReservations = async (req, res) => {
     try {
         const reservations = await Reservation.find(req.query)

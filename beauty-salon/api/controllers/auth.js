@@ -14,6 +14,8 @@ export const register = async (req, res, next) => {
     if (!isEmailValid(req.body.email)) {
       return res.status(400).send("Invalid email address.");
     }
+    const user = await User.findOne({ username: req.body.username });
+    if (user) return next(createError(404, "User exist!"));
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
 
