@@ -1,0 +1,15 @@
+.adminContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+}
+
+button{
+    border: none;
+    padding: 10px 20px;
+    background-color: rgb(213, 235, 228);
+    color:  rgb(48, 157, 123);
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px; 
+}
