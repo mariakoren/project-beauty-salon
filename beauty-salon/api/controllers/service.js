@@ -61,31 +61,33 @@ export const getallService = async (req, res) => {
     }
 }
 
-export const countByType = async (req, res, next) => {
+export const countByType = (req, res, next) => {
     const types = req.query.types.split(',');
-    try{
-        const list = await Promise.all(types.map(type => {
-            return Service.countDocuments({type:type})
-        }))
-        res.status(200).json(list);
-    } catch (err) {
-        next(err);
-    }
-}
 
-export const getServiceTimes = async (req, res, next) => {
-    try {
-      const service = await Service.findById(req.params.id);
-      const list = await Promise.all(
-        service.times.map((time) => {
-          return Time.findById(time);
-        })
-      );
-      res.status(200).json(list)
-    } catch (err) {
-      next(err);
-    }
-  };
+    Promise.all(types.map(type => {
+        return Service.countDocuments({ type: type });
+    }))
+    .then(list => {
+        res.status(200).json(list);
+    })
+    .catch(err => {
+        next(err);
+    });
+};
+
+// export const getServiceTimes = async (req, res, next) => {
+//     try {
+//       const service = await Service.findById(req.params.id);
+//       const list = await Promise.all(
+//         service.times.map((time) => {
+//           return Time.findById(time);
+//         })
+//       );
+//       res.status(200).json(list)
+//     } catch (err) {
+//       next(err);
+//     }
+//   };
 
 //   export const getFilteredServices = async (req, res) => {
 //     try {

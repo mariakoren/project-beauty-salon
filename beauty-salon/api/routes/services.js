@@ -1,5 +1,5 @@
 import express from "express";
-import { createService, deleteService, getService, getallService, updatedService, countByType, getServiceTimes, getFilteredServices } from "../controllers/service.js";
+import { createService, deleteService, getService, getallService, updatedService, countByType,  getFilteredServices } from "../controllers/service.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 import Service from "../models/service.js";
 const router = express.Router();
@@ -25,16 +25,25 @@ router.get("/countByType", countByType)
 
 
 
-router.get("/time/:id", getServiceTimes )
+// router.get("/time/:id", getServiceTimes )
 
 
 //  Pobranie danych o dostępnych dniach oraz terminach
 router.get('/:serviceId/dates', async (req, res) => {
     const { serviceId } = req.params;
-
     try {
         const service = await Service.findById(serviceId, 'dates');
-        res.json(service.dates);
+        const avaible = service.dates.reduce((acc, day) => {
+            const timesForDay = day.times.reduce((ac, time) => {
+                if (time.isAvaible === true) {
+                    ac.push(time.title);
+                }
+                return ac;
+            }, []);
+            acc.push({ [day.dayTitle]: timesForDay });
+            return acc;
+        }, []);
+        res.json(avaible);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Wystąpił błąd podczas pobierania danych.' });
