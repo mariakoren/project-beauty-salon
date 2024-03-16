@@ -1,7 +1,7 @@
 # Beauty Salon Website
 
-A website designed as a shop where you can find items and buy them, leave opinions and grades
+A website (with registration) designed as a beauty salon where you can find procedures, reserve them, leave opinions and grades. Also here is it an admin page with statistics, history etc
 
 Stack: 
-Backend: MongoDB, Express, JS, JWT, SSE
+Backend: MongoDB, Express, JS, JWT
 Frontend: React, CSS
