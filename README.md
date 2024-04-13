@@ -24,4 +24,16 @@ JWT=
 
 ## Visuals
 
+![main page](images/mainpage.png)
+![search page](images/search_page.png)
+![login page](images/login_page.png)
+![all services](images/allServicesPage.png)
+![opinion page](images/opinion_page.png)
+![admin page for editing services](images/admin_edit.png)
+
+
+
+
+
+
 
