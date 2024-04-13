@@ -1,0 +1,16 @@
+.serviceList {
+    text-align: center;
+    color:  rgb(48, 157, 123);
+  
+    ul {
+      list-style-type: none; 
+      padding: 0;
+  
+      li {
+        &:before {
+          content: "★"; 
+          margin-right: 0.5em;
+        }
+      }
+    }
+  }

@@ -35,7 +35,7 @@ const NavBar = () => {
                 <Link to="/" style={{color: indexedDB, textDecoration: "none"}} >
                     <span className="logo">Maria's Beauty</span>
                 </Link>
-                
+                <div className="user">
                 {user ? 
                     <div >
                         {user.username}
@@ -48,6 +48,8 @@ const NavBar = () => {
                         <button onClick = {handleLogin} className="navButton">Załoguj się</button>
                     </div>
                 }
+                </div>
+                
                 <button onClick={()=>navigate("/allservices")} className="navButton">Pokaż wszystkie usługi</button>
                 <button onClick={()=>navigate("/opinions")} className="navButton">Pokaż opinii</button>
 

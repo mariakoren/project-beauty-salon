@@ -13,3 +13,13 @@ button{
     cursor: pointer;
     border-radius: 5px; 
 }
+
+.hello{
+    border: none;
+    padding: 10px 20px;
+    background-color: rgb(213, 235, 228);
+    color:  rgb(48, 157, 123);
+    font-weight: bold;
+    border-radius: 5px; 
+    margin: 10px;
+}
